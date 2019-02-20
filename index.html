@@ -64,6 +64,11 @@
                 header: $('#orderString').val().trim()
             }
 
+            if(obj.header.length != 613){
+                appendWarn("Invalid Header Length")
+                return;
+            }
+
             const stateCenterMapping = new Map();
             stateCenterMapping.set('RJ', 'CE08');
             stateCenterMapping.set('ES', 'CE02');
@@ -147,6 +152,12 @@
 
     function appendSucc(s){
         const t = `<div class="alert alert-success" role="alert">
+                        ${s}
+                    </div>`
+        $('#error').append(t)
+    }
+    function appendWarn(s){
+        const t = `<div class="alert alert-warn" role="alert">
                         ${s}
                     </div>`
         $('#error').append(t)
