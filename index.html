@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./main.css">
+    <style>
+        section{
+            margin: 5%;
+        }
+        #error{
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+        }
+        #error .alert{
+            width: 40%;
+        }
+    </style>
+</head>
+<body>
+    <section class="text-center">
+        <h2>Validator</h2>
+        <br>
+        <form class="form" action="#">
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-2 col-form-label">Retailer Object</label>
+                <div class="col-sm-10">
+                    <textarea type="text" class="form-control" id="retailerObject" placeholder="Retailer Object"> </textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-2 col-form-label">Payment Term</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="paymentTerm" placeholder="Payment Term"> </input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="inputPassword" class="col-sm-2 col-form-label">Order String</label>
+                <div class="col-sm-10">
+                    <textarea type="text" class="form-control" id="orderString" placeholder="Order String"> </textarea>
+                </div>
+            </div>
+        </form>
+        <button type="button" id="submit" class="btn btn-success btn-lg">Validate</button>
+        <hr>
+        <div id="error"></div>
+    </section>
+    <script src="./jquery.js"></script>
+    <script src="./app.js"></script>
+</body>
+<script>
+    $(document).ready(() => {
+
+        $('#submit').click(() => {
+            $('#error').html('')
+            let noError = true;
+
+            const obj = {
+                retailer: JSON.parse($('#retailerObject').val()),
+                paymentTerm: $('#paymentTerm').val(),
+                header: $('#orderString').val().trim()
+            }
+
+            const stateCenterMapping = new Map();
+            stateCenterMapping.set('RJ', 'CE08');
+            stateCenterMapping.set('ES', 'CE02');
+            stateCenterMapping.set('BA', 'CE07');
+            stateCenterMapping.set('SP', 'CE03');
+            stateCenterMapping.set('SE', 'CE09');
+
+            const customerCodeCheck = obj.header.substr(40,10).trim();
+
+            if(customerCodeCheck.length != 10){
+                noError = false;
+                appendErr("Customer Code Check Failed Due To Incorrect Length")
+            }
+
+            if(obj.retailer.supplierSystemRetailerID != customerCodeCheck){
+                noError = false;
+                appendErr("Customer Code Check Failed")
+            }
+
+            const orderTypeCodeCheck = obj.header.substr(50,14).trim()
+
+            if(orderTypeCodeCheck.length != 14){
+                noError = false;
+                appendErr("Order Type Check Failed Due To Incorrect Length")
+            }
+
+            if( orderTypeCodeCheck != stateCenterMapping.get(obj.retailer.state)){
+                noError = false;
+                appendErr("Retailer State Dist Center Doesn't Match Up")
+            }
+
+            const paymentConditionCode = obj.header.substr(64,10).trim();
+
+            if(paymentConditionCode.length != 10){
+                noError = false;
+                appendErr("Payment Condition Code Check Failed Due to Incorrect Length")
+            }
+
+            if(paymentConditionCode != obj.paymentTerm){
+                noError = false;
+                appendErr("Payment Condition Code Doesn't Match Up")
+            }
+
+            const billingUnitCode = obj.header.substr(74,10).trim();
+
+            if(billingUnitCode.length != 10){
+                noError = false;
+                appendErr("Billing Unit Code Check Failed Due To Incorrect Length")
+            }
+
+            if( billingUnitCode != stateCenterMapping.get(obj.retailer.state)){
+                noError = false;
+                appendErr("Retailer State Dist Center Doesn't Match Up")
+            }
+
+            const customerUF = obj.header.substr(590,2).trim();
+
+            if(customerUF.length != 2){
+                noError = false;
+                appendErr("UF Customer Code Check Failed Due To Incorrect Length")
+            }
+
+            if(customerUF != obj.retailer.state){
+                noError = false;
+                appendErr("UF Customer Code Doesn't Match Up")
+            }
+
+            if(noError){
+                appendSucc("Order Header Is Valid")
+            }
+
+        })
+    })
+
+    function appendErr(error){
+        const t = `<div class="alert alert-danger" role="alert">
+                        ${error}
+                    </div>`
+        $('#error').append(t)
+    }
+
+    function appendSucc(s){
+        const t = `<div class="alert alert-success" role="alert">
+                        ${s}
+                    </div>`
+        $('#error').append(t)
+    }
+</script>
+</html>
