@@ -71,50 +71,50 @@
             stateCenterMapping.set('SP', 'CE03');
             stateCenterMapping.set('SE', 'CE09');
 
-            const customerCodeCheck = obj.header.substr(40,10).trim();
+            const customerCodeCheck = obj.header.substr(40,10);
 
             if(customerCodeCheck.length != 10){
                 noError = false;
                 appendErr("Customer Code Check Failed Due To Incorrect Length")
             }
 
-            if(obj.retailer.supplierSystemRetailerID != customerCodeCheck){
+            if(obj.retailer.supplierSystemRetailerID != customerCodeCheck.trim()){
                 noError = false;
                 appendErr("Customer Code Check Failed")
             }
 
-            const orderTypeCodeCheck = obj.header.substr(50,14).trim()
+            const orderTypeCodeCheck = obj.header.substr(50,14)
 
             if(orderTypeCodeCheck.length != 14){
                 noError = false;
                 appendErr("Order Type Check Failed Due To Incorrect Length")
             }
 
-            if( orderTypeCodeCheck != stateCenterMapping.get(obj.retailer.state)){
+            if( orderTypeCodeCheck.trim() != stateCenterMapping.get(obj.retailer.state)){
                 noError = false;
                 appendErr("Retailer State Dist Center Doesn't Match Up")
             }
 
-            const paymentConditionCode = obj.header.substr(64,10).trim();
+            const paymentConditionCode = obj.header.substr(64,10);
 
             if(paymentConditionCode.length != 10){
                 noError = false;
                 appendErr("Payment Condition Code Check Failed Due to Incorrect Length")
             }
 
-            if(paymentConditionCode != obj.paymentTerm){
+            if(paymentConditionCode.trim() != obj.paymentTerm){
                 noError = false;
                 appendErr("Payment Condition Code Doesn't Match Up")
             }
 
-            const billingUnitCode = obj.header.substr(74,10).trim();
+            const billingUnitCode = obj.header.substr(74,10);
 
             if(billingUnitCode.length != 10){
                 noError = false;
                 appendErr("Billing Unit Code Check Failed Due To Incorrect Length")
             }
 
-            if( billingUnitCode != stateCenterMapping.get(obj.retailer.state)){
+            if( billingUnitCode.trim() != stateCenterMapping.get(obj.retailer.state)){
                 noError = false;
                 appendErr("Retailer State Dist Center Doesn't Match Up")
             }
