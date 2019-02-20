@@ -18,6 +18,11 @@
         #error .alert{
             width: 40%;
         }
+
+        .alert-danger {
+            background-color: beige;
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -57,10 +62,11 @@
         $('#submit').click(() => {
             $('#error').html('')
             let noError = true;
-            if($('#retailerObject').val()){
+            if($('#retailerObject').val().trim().length < 1){
                 appendWarn("Empty Data")
                 return;
             }
+
             const obj = {
                 retailer: JSON.parse($('#retailerObject').val()),
                 paymentTerm: $('#paymentTerm').val(),
@@ -160,7 +166,7 @@
         $('#error').append(t)
     }
     function appendWarn(s){
-        const t = `<div class="alert alert-warn" role="alert">
+        const t = `<div class="alert alert-warning" role="alert">
                         ${s}
                     </div>`
         $('#error').append(t)
