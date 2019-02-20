@@ -57,7 +57,10 @@
         $('#submit').click(() => {
             $('#error').html('')
             let noError = true;
-
+            if($('#retailerObject').val()){
+                appendWarn("Empty Data")
+                return;
+            }
             const obj = {
                 retailer: JSON.parse($('#retailerObject').val()),
                 paymentTerm: $('#paymentTerm').val(),
