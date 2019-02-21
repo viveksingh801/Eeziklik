@@ -90,11 +90,6 @@
             creditCharges = parseFloat($('#creditCharge').val());
             taxPercentage = parseFloat($('#taxPercentage').val());
 
-            if(!_discount1 || !_discount2 || !discQty || !creditCharges || !taxPercentage){
-                appendWarn("Invalid input");
-                return;
-            }
-
             lineTotal = _toFixed(supplierPTRBeforeTax*discQty);
             console.log(`lineTotal: ${lineTotal}`);
 
