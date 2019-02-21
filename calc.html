@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./main.css">
+    <style>
+        section{
+            margin: 5%;
+        }
+        #res{
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+        }
+        #res .alert{
+            width: 40%;
+        }
+
+        .alert-danger {
+            background-color: beige;
+            color: red;
+        }
+
+        .alert{
+            color: black !important;
+        }
+    </style>
+</head>
+<body>
+    <section class="text-center">
+        <h2>Price Calculator</h2>
+        <br>
+        <form class="form" action="#">
+            <div class="form-group row">
+                <label for="suppilerPTRBeforeTax" class="col-sm-2 col-form-label">Supplier Price</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="suppilerPTRBeforeTax" placeholder="Price To Retailer Before Tax"> </input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="d1" class="col-sm-2 col-form-label">Discount 1</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="d1" placeholder="Discount 1"> </input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="d2" class="col-sm-2 col-form-label">Discount 2</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="d2" placeholder="Discount 2"> </input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="dq" class="col-sm-2 col-form-label">Discount Qty</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="dq" placeholder="Discount Quantity"> </input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="creditCharge" class="col-sm-2 col-form-label">Credit Charge</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="creditCharge" placeholder="Credit Charge"> </input>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="taxPercentage" class="col-sm-2 col-form-label">Tax Percentage</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="taxPercentage" placeholder="Tax Percentage"> </input>
+                </div>
+            </div>
+        </form>
+        <button type="button" id="submit" class="btn btn-success btn-lg">Validate</button>
+        <hr>
+        <div id="res"></div>
+    </section>
+    <script src="./jquery.js"></script>
+    <script src="./app.js"></script>
+    <script src="./calc.js"></script>
+</body>
+<script>
+    $(document).ready(() => {
+        $('#submit').click(function() {
+            $('#res').html('')
+            supplierPTRBeforeTax=parseFloat($('#suppilerPTRBeforeTax').val())
+            _discount1 = parseFloat($('#d1').val());
+            _discount2 = parseFloat($('#d2').val());
+            discQty = parseFloat($('#dq').val());
+            creditCharges = parseFloat($('#creditCharge').val());
+            taxPercentage = parseFloat($('#taxPercentage').val());
+
+            if(!_discount1 || !_discount2 || !discQty || !creditCharges || !taxPercentage){
+                appendWarn("Invalid input");
+                return;
+            }
+
+            lineTotal = _toFixed(supplierPTRBeforeTax*discQty);
+            console.log(`lineTotal: ${lineTotal}`);
+
+            var promoAmont1 = lineTotal*_discount1/100;
+            var promoAmont2 = lineTotal*_discount2/100;
+            var promoAmont = _toFixed(eval(promoAmont1) + eval(promoAmont2));
+            console.log(`promoAmont: ${promoAmont1} ${promoAmont2} ==> ${promoAmont}`);
+
+            appendSucc(`promoAmont: ${promoAmont1} ${promoAmont2} ==> ${promoAmont}`)
+
+            var priceAfterDisc = _toFixed(lineTotal - promoAmont);
+            console.log(`priceAfterDisc: ${priceAfterDisc}`);
+            appendSucc(`priceAfterDisc: ${priceAfterDisc}`);
+
+            var _creditCharges = _toFixed(lineTotal*creditCharges/100);
+            console.log(`creditCharges: ${_creditCharges}`);
+            appendSucc(`creditCharges: ${_creditCharges}`);
+
+            var _taxableAmount = (eval(priceAfterDisc) + eval(_creditCharges))
+            console.log(`beforeTax: ${_taxableAmount}`);
+            appendSucc(`beforeTax: ${_taxableAmount}`)
+
+            var _taxAmount = _toFixed(_taxableAmount*_toFixed(taxPercentage)/100);
+            console.log(`tax: ${_taxAmount}`);
+
+            appendSucc(`tax: ${_taxAmount}`)
+
+            netPrice =  (eval(_taxableAmount) + eval(_taxAmount));
+            console.log(`netPrice: ${netPrice}`);
+            appendSucc(`netPrice: ${netPrice}`);
+
+            discUnitPrice = _toFixed(netPrice/discQty);
+            console.log(`discUnitPrice: ${discUnitPrice}`);
+            appendSucc(`discUnitPrice: ${discUnitPrice}`)
+        })
+        
+    })
+
+    function appendSucc(s){
+        const t = `<div class="alert alert-success" role="alert">
+                        ${s}
+                    </div>`
+        $('#res').append(t)
+    }
+
+
+    function appendWarn(s){
+        const t = `<div class="alert alert-warning" role="alert">
+                        ${s}
+                    </div>`
+        $('#res').append(t)
+    }
+</script>
+</html>
