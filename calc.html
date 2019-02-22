@@ -95,16 +95,36 @@
             taxPercentage = parseFloat($('#taxPercentage').val());
             peckSize = parseFloat($('#peckSize').val())
 
-      
+            looseItems = discQty%peckSize;
+            pecks = parseInt(discQty/peckSize);
+            result = null;
+            
+            var promoAmont = 0;
+            var promoAmont1 = 0;
+            var promoAmont2 = 0;
+
+            if(looseItems){
+                lineTotal = _toFixed(supplierPTRBeforeTax*looseItems);
+                console.log(`lineTotal: ${lineTotal}`);
+                appendSucc(`lineTotal for loose item: ${lineTotal}`)
+
+                promoAmont1 = lineTotal*_discount1/100;
+                promoAmont += _toFixed(eval(promoAmont1) + eval(promoAmont2));
+            }
+
+            if(pecks){
+                lineTotal = _toFixed(supplierPTRBeforeTax*pecks*peckSize);
+                console.log(`lineTotal: ${lineTotal}`);
+                appendSucc(`lineTotal for peck item: ${lineTotal}`)
+
+                promoAmont1 = lineTotal*_discount1/100;
+                promoAmont2 = lineTotal*_discount2/100;
+                promoAmont += parseFloat(_toFixed(eval(promoAmont1) + eval(promoAmont2)));
+                
+            }
             lineTotal = _toFixed(supplierPTRBeforeTax*discQty);
-            console.log(`lineTotal: ${lineTotal}`);
-            appendSucc(`lineTotal: ${lineTotal}`)
 
-            var promoAmont1 = lineTotal*_discount1/100;
-            var promoAmont2 = lineTotal*_discount2/100;
-            var promoAmont = _toFixed(eval(promoAmont1) + eval(promoAmont2));
             console.log(`promoAmont: ${promoAmont1} ${promoAmont2} ==> ${promoAmont}`);
-
             appendSucc(`promoAmont: ${promoAmont1} ${promoAmont2} ==> ${promoAmont}`)
 
             var priceAfterDisc = _toFixed(lineTotal - promoAmont);
