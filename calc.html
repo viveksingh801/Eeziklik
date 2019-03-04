@@ -115,6 +115,7 @@
 
                 promoAmont1 = lineTotal*_discount1/100;
                 promoAmont += _toFixed(eval(promoAmont1) + eval(promoAmont2));
+                promoAmont = parseFloat(promoAmont);
             }
 
             if(pecks){
