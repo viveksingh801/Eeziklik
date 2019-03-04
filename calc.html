@@ -37,13 +37,17 @@
             <div class="form-group row">
                 <label for="suppilerPTRBeforeTax" class="col-sm-2 col-form-label">Supplier Price</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" id="suppilerPTRBeforeTax" placeholder="Price To Retailer Before Tax"> </input>
+                    <input type="text" class="form-control" id="suppilerPTRBeforeTax" placeholder="Unit Price"> </input>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="d1" class="col-sm-2 col-form-label">Volume Discount</label>
-                <div class="col-sm-10">
+                <div class="col-sm-5">
                     <input type="text" class="form-control" id="d1" placeholder="Discount 1" value="0"> </input>
+                </div>
+                <label for="d1" class="col-sm-2 col-form-label">Volume Qty</label>
+                <div class="col-sm-5">
+                    <input type="text" class="form-control" id="volQty" placeholder="" value="1"> </input>
                 </div>
             </div>
             <div class="form-group row">
@@ -94,8 +98,9 @@
             creditCharges = parseFloat($('#creditCharge').val());
             taxPercentage = parseFloat($('#taxPercentage').val());
             peckSize = parseFloat($('#peckSize').val())
+            volQty = parseFloat($('#volQty').val());
 
-            looseItems = discQty%peckSize;
+            looseItems = parseInt(discQty%peckSize);
             pecks = parseInt(discQty/peckSize);
             result = null;
             
@@ -103,7 +108,7 @@
             var promoAmont1 = 0;
             var promoAmont2 = 0;
 
-            if(looseItems){
+            if(looseItems && discQty >= volQty){
                 lineTotal = _toFixed(supplierPTRBeforeTax*looseItems);
                 console.log(`lineTotal: ${lineTotal}`);
                 appendSucc(`lineTotal for loose item: ${lineTotal}`)
